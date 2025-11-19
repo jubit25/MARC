@@ -2,8 +2,8 @@
 require_once '../php/auth.php';
 require_once '../php/db_connect.php';
 
-// Registrar or system admin can access (include legacy aliases)
-if (!in_array($_SESSION['role'] ?? '', ['registrar', 'system_admin', 'admin', 'school_admin'])) {
+// Registrar or system admin can access
+if (!in_array($_SESSION['role'] ?? '', ['registrar', 'system_admin', 'admin'])) {
     header('location: ../index.php');
     exit;
 }
