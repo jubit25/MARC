@@ -245,7 +245,11 @@ if ($res) { while ($r = $res->fetch_assoc()) { $grade_rows[] = $r; } $res->close
                                     <select class="form-select" name="student_id" id="grade_student" required>
                                         <option value="">Select</option>
                                         <?php foreach ($student_rows as $st): ?>
-                                            <option value="<?php echo (int)$st['id']; ?>"><?php echo htmlspecialchars(($st['last_name'] ?? '').', '.($st['first_name'] ?? '').' ('.($st['grade_level'] ?? '').')'); ?></option>
+                                            <option 
+                                                value="<?php echo (int)$st['id']; ?>"
+                                                data-grade="<?php echo htmlspecialchars($st['grade_level'] ?? ''); ?>">
+                                                <?php echo htmlspecialchars(($st['last_name'] ?? '').', '.($st['first_name'] ?? '').' ('.($st['grade_level'] ?? '').')'); ?>
+                                            </option>
                                         <?php endforeach; ?>
                                     </select>
                                 </div>
@@ -254,7 +258,11 @@ if ($res) { while ($r = $res->fetch_assoc()) { $grade_rows[] = $r; } $res->close
                                     <select class="form-select" name="subject_id" id="grade_subject" required>
                                         <option value="">Select</option>
                                         <?php foreach ($subject_rows as $s): ?>
-                                            <option value="<?php echo (int)$s['id']; ?>"><?php echo htmlspecialchars(($s['subject_name'] ?? '').' - '.($s['grade_level'] ?? '')); ?></option>
+                                            <option 
+                                                value="<?php echo (int)$s['id']; ?>"
+                                                data-grade="<?php echo htmlspecialchars($s['grade_level'] ?? ''); ?>">
+                                                <?php echo htmlspecialchars(($s['subject_name'] ?? '').' - '.($s['grade_level'] ?? '')); ?>
+                                            </option>
                                         <?php endforeach; ?>
                                     </select>
                                 </div>
@@ -300,6 +308,34 @@ if ($res) { while ($r = $res->fetch_assoc()) { $grade_rows[] = $r; } $res->close
 var DEFAULT_SY = '<?php echo addslashes($default_school_year); ?>';
 (function(){
   var gradeModal = document.getElementById('gradeModal');
+  var studentSel = document.getElementById('grade_student');
+  var subjSel = document.getElementById('grade_subject');
+
+  function filterSubjectsByStudent() {
+    if (!studentSel || !subjSel) return;
+    var selectedOpt = studentSel.options[studentSel.selectedIndex];
+    var grade = selectedOpt ? (selectedOpt.getAttribute('data-grade') || '').trim() : '';
+
+    // Always keep the first "Select" option
+    for (var i = 0; i < subjSel.options.length; i++) {
+      var opt = subjSel.options[i];
+      if (opt.value === '') { opt.hidden = false; continue; }
+      var subjGrade = (opt.getAttribute('data-grade') || '').trim();
+      // If no grade selected or subject has no grade, show all
+      if (!grade || !subjGrade) {
+        opt.hidden = false;
+      } else {
+        opt.hidden = (subjGrade !== grade);
+      }
+    }
+    // Reset value to force user to pick a subject for this grade
+    subjSel.value = '';
+  }
+
+  if (studentSel) {
+    studentSel.addEventListener('change', filterSubjectsByStudent);
+  }
+
   if (gradeModal) {
     gradeModal.addEventListener('show.bs.modal', function(e){
       var btn = e.relatedTarget || {};
@@ -311,13 +347,14 @@ var DEFAULT_SY = '<?php echo addslashes($default_school_year); ?>';
       var syInput = document.getElementById('grade_sy');
       syInput.value = btn.getAttribute ? (btn.getAttribute('data-sy') || '') : '';
       document.getElementById('grade_remarks').value = btn.getAttribute ? (btn.getAttribute('data-remarks') || '') : '';
-      var studentSel = document.getElementById('grade_student');
       var studentHidden = document.getElementById('grade_student_hidden');
+
       if (mode === 'update') {
         var sid = btn.getAttribute ? (btn.getAttribute('data-student') || '') : '';
         if (studentSel) {
           studentSel.value = sid;
           studentSel.setAttribute('disabled', 'disabled');
+          filterSubjectsByStudent();
         }
         if (studentHidden) studentHidden.value = sid; // ensure submission includes correct student_id
       } else {
@@ -329,9 +366,14 @@ var DEFAULT_SY = '<?php echo addslashes($default_school_year); ?>';
         if (syInput && (!syInput.value || syInput.value.trim()==='') && DEFAULT_SY) {
           syInput.value = DEFAULT_SY;
         }
+        if (subjSel) {
+          // Show all subjects initially when creating a new grade
+          for (var j = 0; j < subjSel.options.length; j++) {
+            subjSel.options[j].hidden = false;
+          }
+          subjSel.value = '';
+        }
       }
-      var subjSel = document.getElementById('grade_subject');
-      if (mode === 'create') { if (subjSel) subjSel.selectedIndex = 0; }
     });
   }
 })();
