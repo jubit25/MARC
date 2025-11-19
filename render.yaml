@@ -1,11 +1,12 @@
 services:
   - type: web
-    name: marc-php-site
+    name: marc
     env: docker
     plan: free
     autoDeploy: true
-    region: singapore
+    region: philippines
     healthCheckPath: /
     # Render will use the Dockerfile in this directory by default
     # If your repo root is different, set `rootDir` accordingly, e.g.:
     # rootDir: MARC
+
