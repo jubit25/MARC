@@ -16,8 +16,8 @@ $counts = [
     'total_balance' => 0
 ];
 
-// Get total admins (include legacy aliases)
-$sql = "SELECT COUNT(*) as count FROM users WHERE role IN ('system_admin', 'registrar', 'admin', 'school_admin')";
+// Get total admins
+$sql = "SELECT COUNT(*) as count FROM users WHERE role IN ('system_admin', 'registrar', 'admin')";
 $result = $conn->query($sql);
 if ($result) {
     $counts['total_admins'] = $result->fetch_assoc()['count'];
