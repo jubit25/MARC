@@ -53,6 +53,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     }
 }
 
+// Handle delete action for registrar/admin accounts
+if (isset($_GET['action']) && $_GET['action'] === 'delete') {
+    $delete_id = intval($_GET['id'] ?? 0);
+    $current_id = intval($_SESSION['id'] ?? 0);
+
+    if ($delete_id <= 0) {
+        $error = 'Invalid user selected for deletion.';
+    } elseif ($delete_id === $current_id) {
+        $error = 'You cannot delete your own account while logged in.';
+    } else {
+        // Only allow deleting registrar/admin roles
+        if ($stmt = $conn->prepare('DELETE FROM users WHERE id = ? AND role IN (\'registrar\', \'admin\')')) {
+            $stmt->bind_param('i', $delete_id);
+            if ($stmt->execute() && $stmt->affected_rows > 0) {
+                $success = 'User account deleted successfully.';
+            } else {
+                $error = 'Unable to delete user account. It may not exist or is not deletable.';
+            }
+            $stmt->close();
+        } else {
+            $error = 'Failed to prepare delete statement.';
+        }
+    }
+}
+
 $admins = [];
 $sql = "SELECT id, username, role FROM users WHERE role IN ('system_admin', 'registrar', 'admin') ORDER BY role, username";
 $result = $conn->query($sql);
@@ -90,6 +115,9 @@ if ($result) {
 
                 <?php if ($error !== ''): ?>
                     <div class="alert alert-danger"><?php echo $error; ?></div>
+                <?php endif; ?>
+                <?php if ($success !== ''): ?>
+                    <div class="alert alert-success"><?php echo $success; ?></div>
                 <?php endif; ?>
 
                 <?php if ($isAdd): ?>
@@ -134,12 +162,13 @@ if ($result) {
                                             <th scope="col">#</th>
                                             <th scope="col">Username</th>
                                             <th scope="col">Role</th>
+                                            <th scope="col" class="text-end">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php if (count($admins) === 0): ?>
                                             <tr>
-                                                <td colspan="3" class="text-center text-muted">No administrators found.</td>
+                                                <td colspan="4" class="text-center text-muted">No administrators found.</td>
                                             </tr>
                                         <?php else: ?>
                                             <?php foreach ($admins as $index => $admin): ?>
@@ -147,6 +176,19 @@ if ($result) {
                                                     <th scope="row"><?php echo $index + 1; ?></th>
                                                     <td><?php echo htmlspecialchars($admin['username']); ?></td>
                                                     <td><?php echo htmlspecialchars(str_replace('_', ' ', $admin['role'])); ?></td>
+                                                    <td class="text-end">
+                                                        <?php
+                                                        $canDelete = in_array($admin['role'], ['registrar', 'admin'], true)
+                                                            && (int)$admin['id'] !== (int)($_SESSION['id'] ?? 0);
+                                                        if ($canDelete):
+                                                        ?>
+                                                            <a href="manage_admins.php?action=delete&id=<?php echo (int)$admin['id']; ?>"
+                                                               class="btn btn-sm btn-outline-danger"
+                                                               onclick="return confirm('Delete this user account? This action cannot be undone.');">
+                                                                <i class="bi bi-trash"></i>
+                                                            </a>
+                                                        <?php endif; ?>
+                                                    </td>
                                                 </tr>
                                             <?php endforeach; ?>
                                         <?php endif; ?>
