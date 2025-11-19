@@ -11,10 +11,12 @@ services:
     # Environment variables for database connection (Railway MySQL)
     envVars:
       - key: DB_HOST
-        value: "mysql.railway.internal"
+        value: "trolley.proxy.rlwy.net"
+      - key: DB_PORT
+        value: 52249
       - key: DB_NAME
-        value: "railway"                 
+        value: "railway"
       - key: DB_USERNAME
-        value: "root"                    
+        value: "root"
       - key: DB_PASSWORD
         value: "AzCCVTsWzzmokjxzvLEYIGTsFsJYyrdp"
