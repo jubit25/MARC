@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 }
 
 $admins = [];
-$sql = "SELECT id, username, role FROM users WHERE role IN ('system_admin', 'registrar', 'admin', 'school_admin') ORDER BY role, username";
+$sql = "SELECT id, username, role FROM users WHERE role IN ('system_admin', 'registrar', 'admin') ORDER BY role, username";
 $result = $conn->query($sql);
 if ($result) {
     while ($row = $result->fetch_assoc()) {
