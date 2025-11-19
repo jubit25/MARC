@@ -89,7 +89,8 @@ CREATE TABLE IF NOT EXISTS payment_categories (
     description TEXT,
     amount DECIMAL(10,2) NOT NULL,
     is_recurring BOOLEAN DEFAULT FALSE,
-    frequency ENUM('one_time', 'monthly', 'quarterly', 'yearly') DEFAULT 'one_time'
+    frequency ENUM('one_time', 'monthly', 'quarterly', 'yearly') DEFAULT 'one_time',
+    UNIQUE KEY uq_payment_categories_name (name)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- =========================
@@ -107,7 +108,7 @@ CREATE TABLE IF NOT EXISTS payments (
     notes TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE,
-    FOREIGN KEY (payment_category_id) REFERENCES payment_categories(id),
+    FOREIGN KEY (payment_category_id) REFERENCES payment_categories(id) ON DELETE CASCADE,
     FOREIGN KEY (received_by) REFERENCES users(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -122,7 +123,7 @@ CREATE TABLE IF NOT EXISTS payment_schedule (
     amount_due DECIMAL(10,2) NOT NULL,
     status ENUM('pending', 'paid', 'overdue', 'cancelled') DEFAULT 'pending',
     FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE,
-    FOREIGN KEY (payment_category_id) REFERENCES payment_categories(id)
+    FOREIGN KEY (payment_category_id) REFERENCES payment_categories(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- =========================
