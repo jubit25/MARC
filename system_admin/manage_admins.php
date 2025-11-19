@@ -12,13 +12,16 @@ $success = '';
 $isAdd = isset($_GET['action']) && $_GET['action'] === 'add';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'add') {
-    $username = trim($_POST['username'] ?? '');
-    $password = trim($_POST['password'] ?? '');
+    $username   = trim($_POST['username'] ?? '');
+    $password   = trim($_POST['password'] ?? '');
+    $email      = trim($_POST['email'] ?? '');
+    $first_name = trim($_POST['first_name'] ?? '');
+    $last_name  = trim($_POST['last_name'] ?? '');
     $role = 'registrar';
     $allowed_roles = ['registrar'];
 
-    if ($username === '' || $password === '' || !in_array($role, $allowed_roles, true)) {
-        $error = 'Please provide username, password, and a valid role.';
+    if ($username === '' || $password === '' || $email === '' || $first_name === '' || $last_name === '' || !in_array($role, $allowed_roles, true)) {
+        $error = 'Please provide username, password, email, first name, last name, and a valid role.';
     } else {
         // Check if username already exists to avoid duplicate key error
         if ($chk = $conn->prepare('SELECT id FROM users WHERE username = ? LIMIT 1')) {
@@ -31,17 +34,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             }
             $chk->close();
         }
-
         if ($error === '') {
-            $stmt = $conn->prepare('INSERT INTO users (username, password, role) VALUES (?, ?, ?)');
+            $stmt = $conn->prepare('INSERT INTO users (username, password, email, first_name, last_name, role) VALUES (?, ?, ?, ?, ?, ?)');
             if ($stmt) {
                 $hashed = password_hash($password, PASSWORD_DEFAULT);
-                $stmt->bind_param('sss', $username, $hashed, $role);
+                $stmt->bind_param('ssssss', $username, $hashed, $email, $first_name, $last_name, $role);
                 if ($stmt->execute()) {
                     header('Location: manage_admins.php');
                     exit;
                 } else {
-                    $error = 'Failed to create admin. Username may already exist.';
+                    $error = 'Failed to create admin. Username or email may already exist.';
                 }
                 $stmt->close();
             } else {
@@ -102,6 +104,18 @@ if ($result) {
                                 <div class="col-md-6">
                                     <label class="form-label">Password</label>
                                     <input type="password" name="password" class="form-control" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" name="email" class="form-control" required>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">First Name</label>
+                                    <input type="text" name="first_name" class="form-control" required>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Last Name</label>
+                                    <input type="text" name="last_name" class="form-control" required>
                                 </div>
                                 <input type="hidden" name="role" value="registrar">
                                 <div class="col-12">
