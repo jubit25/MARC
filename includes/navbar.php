@@ -51,9 +51,9 @@
         <div class="collapse navbar-collapse" id="topnavLinks">
             <ul class="navbar-nav ms-auto me-3 align-items-lg-center">
                 <?php if (in_array($role, ['registrar','system_admin','admin'], true)): ?>
-                    <li class="nav-item"><a class="nav-link<?php echo ($current_page=='dashboard.php')?' active':''; ?>" href="/MARC/<?php echo $role_path; ?>/dashboard.php">Home</a></li>
-                    <li class="nav-item"><a class="nav-link<?php echo ($current_page=='payments.php')?' active':''; ?>" href="/MARC/<?php echo $role_path; ?>/payments.php">Payments</a></li>
-                    <li class="nav-item"><a class="nav-link<?php echo ($current_page=='grades.php')?' active':''; ?>" href="/MARC/<?php echo $role_path; ?>/grades.php">Grades</a></li>
+                    <li class="nav-item"><a class="nav-link<?php echo ($current_page=='dashboard.php')?' active':''; ?>" href="/<?php echo $role_path; ?>/dashboard.php">Home</a></li>
+                    <li class="nav-item"><a class="nav-link<?php echo ($current_page=='payments.php')?' active':''; ?>" href="/<?php echo $role_path; ?>/payments.php">Payments</a></li>
+                    <li class="nav-item"><a class="nav-link<?php echo ($current_page=='grades.php')?' active':''; ?>" href="/<?php echo $role_path; ?>/grades.php">Grades</a></li>
                     <li class="nav-item d-none d-lg-block"><span class="mx-2 text-muted">•</span></li>
                     <li class="nav-item"><a class="btn btn-primary btn-sm" href="/MARC/<?php echo $role_path; ?>/reports.php">Reports</a></li>
                 <?php endif; ?>
@@ -81,19 +81,19 @@
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" aria-labelledby="userDropdown">
                     <li>
-                        <a class="dropdown-item" href="/MARC/<?php echo $role_path; ?>/profile.php">
+                        <a class="dropdown-item" href="/<?php echo $role_path; ?>/profile.php">
                             <i class="bi bi-person me-2"></i> My Profile
                         </a>
                     </li>
                     <li><hr class="dropdown-divider"></li>
                     <li>
-                        <a class="dropdown-item" href="/MARC/<?php echo $role_path; ?>/profile.php#security">
+                        <a class="dropdown-item" href="/<?php echo $role_path; ?>/profile.php#security">
                             <i class="bi bi-gear me-2"></i> Settings
                         </a>
                     </li>
                     <li><hr class="dropdown-divider"></li>
                     <li>
-                        <a class="dropdown-item text-danger" href="/MARC/php/logout.php">
+                        <a class="dropdown-item text-danger" href="/php/logout.php">
                             <i class="bi bi-box-arrow-right me-2"></i> Logout
                         </a>
                     </li>
