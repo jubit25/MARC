@@ -8,7 +8,7 @@
             <h5 class="mb-0 d-none d-md-block">
                 <?php 
                 $role = $_SESSION['role'] ?? '';
-                $role_path = (in_array($role, ['admin','school_admin'], true)) ? 'registrar' : $role;
+                $role_path = ($role === 'admin') ? 'registrar' : $role;
                 $page_title = '';
                 $current_page = basename($_SERVER['PHP_SELF']);
                 
@@ -50,7 +50,7 @@
 
         <div class="collapse navbar-collapse" id="topnavLinks">
             <ul class="navbar-nav ms-auto me-3 align-items-lg-center">
-                <?php if (in_array($role, ['registrar','system_admin','admin','school_admin'], true)): ?>
+                <?php if (in_array($role, ['registrar','system_admin','admin'], true)): ?>
                     <li class="nav-item"><a class="nav-link<?php echo ($current_page=='dashboard.php')?' active':''; ?>" href="/MARC/<?php echo $role_path; ?>/dashboard.php">Home</a></li>
                     <li class="nav-item"><a class="nav-link<?php echo ($current_page=='payments.php')?' active':''; ?>" href="/MARC/<?php echo $role_path; ?>/payments.php">Payments</a></li>
                     <li class="nav-item"><a class="nav-link<?php echo ($current_page=='grades.php')?' active':''; ?>" href="/MARC/<?php echo $role_path; ?>/grades.php">Grades</a></li>
