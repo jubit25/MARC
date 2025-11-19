@@ -71,7 +71,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - MARC Agape Christian Learning School</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="icon" type="image/png" href="/MARC/image/marclogo.png">
+    <link rel="icon" type="image/png" href="image/marclogo.png">
     <style>
         html, body { height: 100%; overflow: hidden; }
         body {
@@ -149,7 +149,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     <div class="container">
         <div class="login-container">
             <div class="login-header">
-                <img src="/MARC/image/marclogo.png" alt="MARC Logo" class="login-logo">
+                <img src="image/marclogo.png" alt="MARC Logo" class="login-logo">
                 <h2>MACLCI</h2>
                 <p class="text-muted">Please use your LRN as the username to login.</p>
             </div>
