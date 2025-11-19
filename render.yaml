@@ -4,8 +4,9 @@ services:
     env: docker
     plan: free
     autoDeploy: true
-    region: singapore   # ✅ valid
+    region: singapore
     healthCheckPath: /
     # Render will use the Dockerfile in this directory by default
     # If your repo root is different, set `rootDir` accordingly, e.g.:
     # rootDir: MARC
+
