@@ -224,10 +224,13 @@ if ($action === 'edit' && $edit_user_id > 0) {
                 <?php if (isset($_GET['added']) && $_GET['added'] == '1'): ?>
                     <div class="alert alert-success">Student added successfully.</div>
                 <?php endif; ?>
+                <?php if (isset($_GET['updated']) && $_GET['updated'] == '1'): ?>
+                    <div class="alert alert-success">Student updated successfully.</div>
+                <?php endif; ?>
 
-                <?php if ($action === 'add'): ?>
+                <?php if ($action === 'add' || ($action === 'edit' && $edit_row)): ?>
                     <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h2 class="mb-0">Add Student</h2>
+                        <h2 class="mb-0"><?php echo ($action === 'edit') ? 'Edit Student' : 'Add Student'; ?></h2>
                         <a href="manage_students.php" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-2"></i>Back</a>
                     </div>
 
@@ -237,67 +240,71 @@ if ($action === 'edit' && $edit_user_id > 0) {
 
                     <div class="card mb-3">
                         <div class="card-body">
-                            <form method="post" action="manage_students.php?action=add">
+                            <form method="post" action="manage_students.php?action=<?php echo ($action === 'edit') ? 'edit&id='. (int)$edit_user_id : 'add'; ?>">
+                                <input type="hidden" name="action" value="<?php echo ($action === 'edit') ? 'edit' : 'add'; ?>">
+                                <?php if ($action === 'edit' && $edit_row): ?>
+                                    <input type="hidden" name="user_id" value="<?php echo (int)$edit_row['id']; ?>">
+                                <?php endif; ?>
                                 <div class="row g-3">
                                     <div class="col-md-4">
-                                        <label class="form-label">Password*</label>
-                                        <input type="password" name="password" class="form-control" required>
+                                        <label class="form-label">Password<?php echo ($action === 'edit') ? ' (leave blank to keep current)' : '*'; ?></label>
+                                        <input type="password" name="password" class="form-control" <?php echo ($action === 'edit') ? '' : 'required'; ?>>
                                     </div>
                                     <div class="col-md-4">
                                         <label class="form-label">Email*</label>
-                                        <input type="email" name="email" class="form-control" required>
+                                        <input type="email" name="email" class="form-control" required value="<?php echo htmlspecialchars($edit_row['email'] ?? ''); ?>">
                                     </div>
 
                                     <div class="col-md-6">
                                         <label class="form-label">First Name*</label>
-                                        <input type="text" name="first_name" class="form-control" required>
+                                        <input type="text" name="first_name" class="form-control" required value="<?php echo htmlspecialchars($edit_row['first_name'] ?? ''); ?>">
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label">Last Name*</label>
-                                        <input type="text" name="last_name" class="form-control" required>
+                                        <input type="text" name="last_name" class="form-control" required value="<?php echo htmlspecialchars($edit_row['last_name'] ?? ''); ?>">
                                     </div>
 
                                     <div class="col-md-4">
                                         <label class="form-label">LRN (Username)*</label>
-                                        <input type="text" name="lrn" class="form-control" required>
+                                        <input type="text" name="lrn" class="form-control" required value="<?php echo htmlspecialchars($edit_row['lrn'] ?? ''); ?>">
                                     </div>
                                     <div class="col-md-4">
                                         <label class="form-label">Grade Level*</label>
                                         <select name="grade_level" id="grade_level" class="form-select" required>
                                             <option value="">Select grade level</option>
-                                            <option>Grade 1</option>
-                                            <option>Grade 2</option>
-                                            <option>Grade 3</option>
-                                            <option>Grade 4</option>
-                                            <option>Grade 5</option>
-                                            <option>Grade 6</option>
+                                            <?php
+                                            $levels = ['Grade 1','Grade 2','Grade 3','Grade 4','Grade 5','Grade 6'];
+                                            $curLevel = $edit_row['grade_level'] ?? '';
+                                            foreach ($levels as $lvl): ?>
+                                                <option <?php echo ($curLevel === $lvl) ? 'selected' : ''; ?>><?php echo $lvl; ?></option>
+                                            <?php endforeach; ?>
                                         </select>
                                     </div>
                                     <div class="col-md-4">
                                         <label class="form-label">Section</label>
-                                        <input type="text" name="section" class="form-control">
+                                        <input type="text" name="section" class="form-control" value="<?php echo htmlspecialchars($edit_row['section'] ?? ''); ?>">
                                     </div>
 
                                     <div class="col-md-4">
                                         <label class="form-label">Birth Date</label>
-                                        <input type="date" name="birth_date" class="form-control">
+                                        <input type="date" name="birth_date" class="form-control" value="<?php echo htmlspecialchars($edit_row['birth_date'] ?? ''); ?>">
                                     </div>
                                     <div class="col-md-8">
                                         <label class="form-label">Address</label>
-                                        <input type="text" name="address" class="form-control">
+                                        <input type="text" name="address" class="form-control" value="<?php echo htmlspecialchars($edit_row['address'] ?? ''); ?>">
                                     </div>
 
                                     <div class="col-md-6">
                                         <label class="form-label">Parent/Guardian Name</label>
-                                        <input type="text" name="parent_name" class="form-control">
+                                        <input type="text" name="parent_name" class="form-control" value="<?php echo htmlspecialchars($edit_row['parent_name'] ?? ''); ?>">
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label">Parent Contact</label>
-                                        <input type="text" name="parent_contact" class="form-control">
+                                        <input type="text" name="parent_contact" class="form-control" value="<?php echo htmlspecialchars($edit_row['parent_contact'] ?? ''); ?>">
                                     </div>
                                 </div>
                                 <div class="mt-4 d-flex gap-2">
-                                    <button type="submit" class="btn btn-success"><i class="bi bi-check2-circle me-2"></i>Save</button>
+                                    <button type="submit" class="btn btn-success"><i class="bi bi-check2-circle me-2"></i><?php echo ($action === 'edit') ? 'Update' : 'Save'; ?></button>
                                     <a href="manage_students.php" class="btn btn-secondary">Cancel</a>
                                 </div>
                             </form>
@@ -334,6 +341,7 @@ if ($action === 'edit' && $edit_user_id > 0) {
                                             <th scope="col">Section</th>
                                             <th scope="col">Username</th>
                                             <th scope="col">Role</th>
+                                        <th scope="col" class="text-end">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -351,6 +359,11 @@ if ($action === 'edit' && $edit_user_id > 0) {
                                                     <td><?php echo htmlspecialchars($student['section'] ?? ''); ?></td>
                                                     <td><?php echo htmlspecialchars($student['username']); ?></td>
                                                     <td><?php echo htmlspecialchars(str_replace('_', ' ', $student['role'])); ?></td>
+                                                    <td class="text-end">
+                                                        <a href="manage_students.php?action=edit&id=<?php echo (int)$student['id']; ?>" class="btn btn-sm btn-outline-primary">
+                                                            <i class="bi bi-pencil"></i> Edit
+                                                        </a>
+                                                    </td>
                                                 </tr>
                                             <?php endforeach; ?>
                                         <?php endif; ?>
