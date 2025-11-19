@@ -13,9 +13,9 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 $current_page = basename($_SERVER['PHP_SELF']);
 $allowed_pages = [
     'system_admin' => ['dashboard.php', 'manage_admins.php', 'manage_students.php', 'grades.php', 'reports.php', 'profile.php', 'settings.php', 'payments.php', 'payments_api.php', 'payments_export.php', 'report_card.php'],
-    'registrar' => ['dashboard.php', 'manage_students.php', 'grades.php', 'reports.php', 'profile.php', 'payments.php'],
+    'registrar' => ['dashboard.php', 'manage_students.php', 'grades.php', 'reports.php', 'profile.php', 'payments.php', 'payments_api.php'],
     // Treat 'admin' same as 'registrar'
-    'admin' => ['dashboard.php', 'manage_students.php', 'grades.php', 'reports.php', 'profile.php', 'payments.php'],
+    'admin' => ['dashboard.php', 'manage_students.php', 'grades.php', 'reports.php', 'profile.php', 'payments.php', 'payments_api.php'],
     'students' => ['dashboard.php', 'my_grades.php', 'my_payments.php', 'profile.php']
 ];
 
