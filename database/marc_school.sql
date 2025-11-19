@@ -81,6 +81,21 @@ CREATE TABLE IF NOT EXISTS grades (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- =========================
+-- APP SETTINGS TABLE
+-- =========================
+CREATE TABLE IF NOT EXISTS app_settings (
+    k VARCHAR(50) NOT NULL PRIMARY KEY,
+    v VARCHAR(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Default settings for auto remarks and school year
+INSERT INTO app_settings (k, v) VALUES
+    ('auto_remarks_enabled', '1'),
+    ('default_school_year', '2025-2026')
+ON DUPLICATE KEY UPDATE
+    v = VALUES(v);
+
+-- =========================
 -- PAYMENT CATEGORIES TABLE
 -- =========================
 CREATE TABLE IF NOT EXISTS payment_categories (
@@ -129,16 +144,14 @@ CREATE TABLE IF NOT EXISTS payment_schedule (
 -- =========================
 -- DEFAULT PAYMENT CATEGORIES
 -- =========================
+-- Clean up any existing categories (and cascade related data) then seed defaults
+DELETE FROM payment_categories;
+
 INSERT INTO payment_categories (name, description, amount, is_recurring, frequency) VALUES
 ('Tuition Fee', 'Monthly tuition fee', 5000.00, TRUE, 'monthly'),
 ('Registration Fee', 'One-time registration fee', 2000.00, FALSE, 'one_time'),
 ('Books', 'Books and learning materials', 1500.00, FALSE, 'one_time'),
-('Uniform', 'School uniform', 1200.00, FALSE, 'one_time')
-ON DUPLICATE KEY UPDATE
-    description = VALUES(description),
-    amount      = VALUES(amount),
-    is_recurring = VALUES(is_recurring),
-    frequency    = VALUES(frequency);
+('Uniform', 'School uniform', 1200.00, FALSE, 'one_time');
 
 -- =========================
 -- DEFAULT SUBJECTS
