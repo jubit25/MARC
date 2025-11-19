@@ -3,7 +3,7 @@ require_once '../php/auth.php';
 require_once '../php/db_connect.php';
 
 // Only registrar or system admin can access
-if (!in_array($_SESSION["role"] ?? '', ['registrar', 'system_admin', 'admin', 'school_admin'])) {
+if (!in_array($_SESSION["role"] ?? '', ['registrar', 'system_admin', 'admin'])) {
     header("location: ../index.php");
     exit;
 }
