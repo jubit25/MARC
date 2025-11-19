@@ -8,6 +8,10 @@ if ($_SESSION["role"] !== 'system_admin') {
     exit;
 }
 
+// Reuse the registrar Manage Students UI (which already supports editing) for system admins
+header('Location: ../registrar/manage_students.php');
+exit;
+
 $success_msg = $error_msg = '';
 $action = isset($_GET['action']) ? $_GET['action'] : '';
 
