@@ -13,7 +13,7 @@ $role_path = ($role === 'admin') ? 'registrar' : $role;
 
     <ul class="list-unstyled components">
         <li class="mb-2">
-            <a href="/MARC/<?php echo $role_path; ?>/dashboard.php" class="d-flex align-items-center <?php echo ($current_page == 'dashboard.php') ? 'active' : ''; ?>">
+            <a href="/<?php echo $role_path; ?>/dashboard.php" class="d-flex align-items-center <?php echo ($current_page == 'dashboard.php') ? 'active' : ''; ?>">
                 <i class="bi bi-speedometer2 me-2"></i>
                 <span>Dashboard</span>
             </a>
@@ -27,13 +27,13 @@ $role_path = ($role === 'admin') ? 'registrar' : $role;
             </a>
             <ul class="collapse list-unstyled" id="adminSubmenu">
                 <li>
-                    <a href="/MARC/system_admin/manage_admins.php" class="d-flex align-items-center <?php echo ($current_page == 'manage_admins.php') ? 'active' : ''; ?>">
+                    <a href="/system_admin/manage_admins.php" class="d-flex align-items-center <?php echo ($current_page == 'manage_admins.php') ? 'active' : ''; ?>">
                         <i class="bi bi-chevron-right me-2"></i>
                         <span>Manage Admins</span>
                     </a>
                 </li>
                 <li>
-                    <a href="/MARC/system_admin/manage_students.php" class="d-flex align-items-center <?php echo ($current_page == 'manage_students.php') ? 'active' : ''; ?>">
+                    <a href="/system_admin/manage_students.php" class="d-flex align-items-center <?php echo ($current_page == 'manage_students.php') ? 'active' : ''; ?>">
                         <i class="bi bi-chevron-right me-2"></i>
                         <span>Manage Students</span>
                     </a>
@@ -50,13 +50,13 @@ $role_path = ($role === 'admin') ? 'registrar' : $role;
             </a>
             <ul class="collapse list-unstyled" id="paymentSubmenu">
                 <li>
-                    <a href="/MARC/<?php echo $role_path; ?>/payments.php" class="d-flex align-items-center <?php echo ($current_page == 'payments.php') ? 'active' : ''; ?>">
+                    <a href="/<?php echo $role_path; ?>/payments.php" class="d-flex align-items-center <?php echo ($current_page == 'payments.php') ? 'active' : ''; ?>">
                         <i class="bi bi-chevron-right me-2"></i>
                         <span>Record Payment</span>
                     </a>
                 </li>
                 <li>
-                    <a href="/MARC/<?php echo $role_path; ?>/payments.php#history" class="d-flex align-items-center">
+                    <a href="/<?php echo $role_path; ?>/payments.php#history" class="d-flex align-items-center">
                         <i class="bi bi-chevron-right me-2"></i>
                         <span>Payment History</span>
                     </a>
@@ -66,7 +66,7 @@ $role_path = ($role === 'admin') ? 'registrar' : $role;
 
         <?php if ($role == 'registrar' || $role == 'system_admin'): ?>
         <li class="mb-2">
-            <a href="/MARC/<?php echo $role_path; ?>/manage_students.php" class="d-flex align-items-center <?php echo ($current_page == 'manage_students.php') ? 'active' : ''; ?>">
+            <a href="/<?php echo $role_path; ?>/manage_students.php" class="d-flex align-items-center <?php echo ($current_page == 'manage_students.php') ? 'active' : ''; ?>">
                 <i class="bi bi-people me-2"></i>
                 <span>Manage Students</span>
             </a>
@@ -97,13 +97,13 @@ $role_path = ($role === 'admin') ? 'registrar' : $role;
         
         <?php if ($role == 'students'): ?>
         <li class="mb-2">
-            <a href="/MARC/students/my_grades.php" class="d-flex align-items-center <?php echo ($current_page == 'my_grades.php') ? 'active' : ''; ?>">
+            <a href="/students/my_grades.php" class="d-flex align-items-center <?php echo ($current_page == 'my_grades.php') ? 'active' : ''; ?>">
                 <i class="bi bi-journal-text me-2"></i>
                 <span>My Grades</span>
             </a>
         </li>
         <li class="mb-2">
-            <a href="/MARC/students/my_payments.php" class="d-flex align-items-center <?php echo ($current_page == 'my_payments.php') ? 'active' : ''; ?>">
+            <a href="/students/my_payments.php" class="d-flex align-items-center <?php echo ($current_page == 'my_payments.php') ? 'active' : ''; ?>">
                 <i class="bi bi-credit-card me-2"></i>
                 <span>My Payments</span>
             </a>
@@ -111,14 +111,14 @@ $role_path = ($role === 'admin') ? 'registrar' : $role;
         <?php endif; ?>
         
         <li class="mb-2">
-            <a href="/MARC/<?php echo $role_path; ?>/profile.php" class="d-flex align-items-center <?php echo ($current_page == 'profile.php') ? 'active' : ''; ?>">
+            <a href="/<?php echo $role_path; ?>/profile.php" class="d-flex align-items-center <?php echo ($current_page == 'profile.php') ? 'active' : ''; ?>">
                 <i class="bi bi-person me-2"></i>
                 <span>My Profile</span>
             </a>
         </li>
         
         <li class="mt-4">
-            <a href="/MARC/php/logout.php" class="d-flex align-items-center text-danger">
+            <a href="/php/logout.php" class="d-flex align-items-center text-danger">
                 <i class="bi bi-box-arrow-right me-2"></i>
                 <span>Logout</span>
             </a>
