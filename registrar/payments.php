@@ -97,7 +97,7 @@ if ($res = $conn->query("SELECT DISTINCT section FROM students WHERE section IS 
     <title>Payments | MARC</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="/MARC/system_admin/assets/css/style.css" rel="stylesheet">
+    <link href="../system_admin/assets/css/style.css" rel="stylesheet">
     <?php if ($__EMBED): ?>
     <style>
       body.embed nav.navbar { display:none !important; }
