@@ -55,7 +55,7 @@
                     <li class="nav-item"><a class="nav-link<?php echo ($current_page=='payments.php')?' active':''; ?>" href="/<?php echo $role_path; ?>/payments.php">Payments</a></li>
                     <li class="nav-item"><a class="nav-link<?php echo ($current_page=='grades.php')?' active':''; ?>" href="/<?php echo $role_path; ?>/grades.php">Grades</a></li>
                     <li class="nav-item d-none d-lg-block"><span class="mx-2 text-muted">•</span></li>
-                    <li class="nav-item"><a class="btn btn-primary btn-sm" href="/MARC/<?php echo $role_path; ?>/reports.php">Reports</a></li>
+                    <li class="nav-item"><a class="btn btn-primary btn-sm" href="/<?php echo $role_path; ?>/reports.php">Reports</a></li>
                 <?php endif; ?>
             </ul>
 
