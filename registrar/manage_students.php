@@ -7,8 +7,63 @@ if (!in_array($_SESSION["role"] ?? '', ['registrar', 'system_admin', 'admin'])) 
     header("location: ../index.php");
     exit;
 }
+
+// Update existing student
+if (($_SERVER['REQUEST_METHOD'] === 'POST') && isset($_POST['action']) && $_POST['action'] === 'edit') {
+    $user_id      = (int)($_POST['user_id'] ?? 0);
+    $password     = trim($_POST['password'] ?? '');
+    $email        = trim($_POST['email'] ?? '');
+    $first_name   = trim($_POST['first_name'] ?? '');
+    $last_name    = trim($_POST['last_name'] ?? '');
+    $student_id_code = trim($_POST['lrn'] ?? '');
+    $grade_level  = trim($_POST['grade_level'] ?? '');
+    $section      = trim($_POST['section'] ?? '');
+    $birth_date   = trim($_POST['birth_date'] ?? '');
+    $address      = trim($_POST['address'] ?? '');
+    $parent_name  = trim($_POST['parent_name'] ?? '');
+    $parent_contact = trim($_POST['parent_contact'] ?? '');
+
+    if ($user_id <= 0 || $student_id_code === '' || $email === '' || $first_name === '' || $last_name === '' || $grade_level === '') {
+        $error_msg = 'Please fill in all required fields.';
+    } else {
+        ensureSubjectsForGrade($conn, $grade_level, $GRADE_SUBJECTS);
+        $conn->begin_transaction();
+        try {
+            // Update user record
+            if ($password !== '') {
+                $hashed = password_hash($password, PASSWORD_DEFAULT);
+                $stmtUser = $conn->prepare("UPDATE users SET username=?, password=?, email=?, first_name=?, last_name=? WHERE id=? AND role='students'");
+                $stmtUser->bind_param('sssssi', $student_id_code, $hashed, $email, $first_name, $last_name, $user_id);
+            } else {
+                $stmtUser = $conn->prepare("UPDATE users SET username=?, email=?, first_name=?, last_name=? WHERE id=? AND role='students'");
+                $stmtUser->bind_param('ssssi', $student_id_code, $email, $first_name, $last_name, $user_id);
+            }
+            if (!$stmtUser || !$stmtUser->execute()) {
+                throw new Exception('Failed to update user account.');
+            }
+            if ($stmtUser) { $stmtUser->close(); }
+
+            // Update student profile
+            $stmtStud = $conn->prepare("UPDATE students SET student_id=?, grade_level=?, section=?, birth_date=?, address=?, parent_name=?, parent_contact=? WHERE user_id=?");
+            $stmtStud->bind_param('sssssssi', $student_id_code, $grade_level, $section, $birth_date, $address, $parent_name, $parent_contact, $user_id);
+            if (!$stmtStud->execute()) {
+                throw new Exception('Failed to update student profile.');
+            }
+            $stmtStud->close();
+
+            $conn->commit();
+            header('Location: manage_students.php?updated=1');
+            exit;
+        } catch (Exception $e) {
+            $conn->rollback();
+            $error_msg = $e->getMessage();
+        }
+    }
+}
 $success_msg = $error_msg = '';
 $action = isset($_GET['action']) ? $_GET['action'] : '';
+$edit_user_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+$edit_row = null;
 
 // Subject mapping per grade level
 $GRADE_SUBJECTS = [
@@ -70,7 +125,7 @@ function ensureSubjectsForGrade(mysqli $conn, string $grade, array $map): void {
     $stmt->close();
 }
 
-if ($action === 'add' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+if (($_SERVER['REQUEST_METHOD'] === 'POST') && isset($_POST['action']) && $_POST['action'] === 'add') {
     $password = trim($_POST['password'] ?? '');
     $email = trim($_POST['email'] ?? '');
     $first_name = trim($_POST['first_name'] ?? '');
@@ -126,6 +181,26 @@ $result = $conn->query($sql);
 if ($result) {
     while ($row = $result->fetch_assoc()) {
         $students[] = $row;
+    }
+}
+
+// Load data for edit form
+if ($action === 'edit' && $edit_user_id > 0) {
+    $stmt = $conn->prepare("SELECT u.id, u.username, u.email, u.first_name, u.last_name,
+                                   s.student_id AS lrn, s.grade_level, s.section, s.birth_date, s.address,
+                                   s.parent_name, s.parent_contact
+                            FROM users u
+                            JOIN students s ON s.user_id = u.id
+                            WHERE u.id = ? AND u.role = 'students' LIMIT 1");
+    if ($stmt) {
+        $stmt->bind_param('i', $edit_user_id);
+        if ($stmt->execute()) {
+            $res = $stmt->get_result();
+            if ($res && $res->num_rows === 1) {
+                $edit_row = $res->fetch_assoc();
+            }
+        }
+        $stmt->close();
     }
 }
 ?>
